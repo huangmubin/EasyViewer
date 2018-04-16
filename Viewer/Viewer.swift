@@ -247,6 +247,21 @@ class Viewer: UIView {
     
     // MARK: - Gesture
     
+    var touch_disable_frame: CGRect?
+    
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        print("gestureRecognizerShouldBegin \(gestureRecognizer.location(ofTouch: 0, in: self)) \(touch_disable_frame?.contains(gestureRecognizer.location(ofTouch: 0, in: self)) == true)")
+        let touch = gestureRecognizer.location(ofTouch: 0, in: self)
+        if touch_disable_frame?.contains(touch) == true {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+    
+    
+    
     /** 拖拽 */
     var gesture_pan: UIPanGestureRecognizer!
     /** 缩放 */
@@ -267,6 +282,7 @@ class Viewer: UIView {
     var gesture_pan_front: Bool = true
     /** 是否可以往后拖拽 */
     var gesture_pan_back: Bool = true
+    
     
     /** */
     func gesture_pan_action(_ sender: UIPanGestureRecognizer) {
@@ -568,7 +584,7 @@ class Viewer: UIView {
     /** 删除当前视图 */
     func delete_current_item() {
         if let index = self.model?.viewer_index, let view = view_c as? UIView {
-            UIView.animate(withDuration: 1, animations: {
+            UIView.animate(withDuration: 0.5, animations: {
                 view.alpha = 0
             }, completion: { _ in
                 self.model?.viewer(self, delete: index)
